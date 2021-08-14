@@ -1,0 +1,31 @@
+# 编译语言、环境
+dist: xenial
+os: linux
+language: node_js
+
+# Node.js 版本
+node_js:
+  - 12
+
+cache: npm
+
+# 只有 master 分支更改才触发 CI
+branches:
+  only:
+    - master
+
+before_install:
+  - export TZ='Asia/Shanghai'
+
+install:
+  - npm install # 安装依赖
+
+script:
+  - npm run build # 执行打包命令，生成 dist 静态文件
+  - cd ./dist
+  - git init
+  - git config user.name "${GIT_NAME}"
+  - git config user.email "${GIT_EMAIL}"
+  - git add .
+  - git commit -m "update By garvey"
+  - git push --force --quiet "https://${GH_TOKEN}@${GH_REF}" master:master
